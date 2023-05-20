@@ -1,12 +1,17 @@
-from flask import Flask
+from flask import Flask, request
+
+from predict_model import PredictoModel
 
 app = Flask(__name__)
 
 
-@app.route('/<title>')
-def hello_world(title):
+@app.route('/predict')
+def predict_success():
+    title = request.args.get("title")
+    PM = PredictoModel()
+    predicted_claps = PM.predict_claps(title)
     return {
-        "message": "Sorry, but model is on development. Please wait."
+        "predicted_claps": predicted_claps
     }
 
 
