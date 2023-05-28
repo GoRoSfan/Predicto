@@ -1,3 +1,5 @@
 venv/
 .idea/
 model/
+model_params.json
+random_forest.joblib
