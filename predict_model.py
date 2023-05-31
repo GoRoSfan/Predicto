@@ -44,7 +44,7 @@ class PredictoModel:
     @staticmethod
     def preprocess_data(df):
         mean_df = np.mean(df.claps)
-        df = df[df.claps < mean_df * 20]
+        df = df[df.claps < mean_df * 40]
 
         model_params = {
             "min": int(np.min(df.claps)),
@@ -77,7 +77,7 @@ class PredictoModel:
 
     def new_model(self):
         model = keras.Sequential()
-        model.add(keras.Input(shape=(None, 384)))
+        model.add(keras.Input(shape=(384,)))
         model.add(keras.layers.Dense(128, activation='relu'))
         model.add(keras.layers.Dropout(0.2))
         model.add(keras.layers.Dense(32, activation='relu'))
@@ -98,13 +98,11 @@ class PredictoModel:
         X = np.array([np.asarray(embd).astype('float32') for embd in self.df.embeddings])
         y = np.asarray(self.df.claps).astype('float32')
 
-        self.model.fit(X, y, epochs=10, batch_size=256, validation_split=0.2)
+        self.model.fit(X, y, epochs=20, batch_size=256, validation_split=0.2)
         self.model.save(self.model_path)
 
-    def predict_claps(self, title: str | list):
-        # seed = sum(ord(char) for char in title)
-        # random.seed(seed)
-        embd = title_to_embedding(title)
+    def predict_claps(self, title: str):
+        embd = np.array([title_to_embedding(title), title_to_embedding(title)])
         model_params = self.get_model_params()
         predicts = [p * (model_params["max"] - model_params["min"]) + model_params["min"] for p in
                     self.model.predict(embd)]
@@ -187,9 +185,10 @@ class PredictoRFR:
 
 if __name__ == '__main__':
     pass
-    # pm = PredictoModel(data_file="updated_train_set.json")
+    pm = PredictoModel(data_file="updated_train_set.json")
     # pm.new_model()
     # pm.update_model()
+    print(pm.predict_claps("something for testing"))
     #
     # test_df = pd.read_json("updated_medium_data.json")
     # test_df = pm.preprocess_data(test_df)
