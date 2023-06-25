@@ -19,7 +19,7 @@ def predict_by_nn():
 def predict_by_rfr():
     title = request.args.get("title")
     PRFR = PredictoRFR()
-    predicted_claps = PRFR.predict_claps(title)
+    predicted_claps = PRFR.predict_claps(title)[0]
     return {
         "predicted_claps": predicted_claps
     }

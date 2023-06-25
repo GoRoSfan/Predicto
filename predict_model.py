@@ -178,7 +178,7 @@ class PredictoRFR:
 
     @staticmethod
     def predict_claps(titles):
-        embds = title_to_embedding(titles, embedding='all-MiniLM-L6-v2')
+        embds = title_to_embedding(titles, embedding='all-MiniLM-L6-v2').reshape(1, -1)
         rfr = joblib.load("random_forest.joblib")
         return rfr.predict(embds)
 
